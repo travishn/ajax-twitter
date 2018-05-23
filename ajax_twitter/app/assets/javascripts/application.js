@@ -12,5 +12,5 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jqery.serializejson
-//= require require_tree
+//= require jquery.serializejson
+//= require_tree

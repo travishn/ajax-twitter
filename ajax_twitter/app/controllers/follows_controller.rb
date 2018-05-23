@@ -7,7 +7,7 @@ class FollowsController < ApplicationController
 
     @follow = current_user.out_follows.create!(followee_id: params[:user_id])
 
-    respond_to do |format|
+    respond_to do |format| #if we don't specify a dataType in our ajax request, it will return the first respond_to type specified in the controller.
       format.html { redirect_to request.referrer }
       format.json { render json: @follow }
     end
