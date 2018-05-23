@@ -71,12 +71,44 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./frontend/api_util.js":
+/*!******************************!*\
+  !*** ./frontend/api_util.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+const APIUtil = {
+  followUser: id => {
+    $.ajax({
+      method: "DELETE",
+      url: `/users/${id}/follow`,
+      dataType: 'json'
+    });
+  },
+
+  unfollowUser: id => {
+    $.ajax({
+      method: "POST",
+      url: `/users/${id}/follow`,
+      dataType: 'json'
+    });
+  }
+};
+
+module.exports = APIUtil;
+
+
+/***/ }),
+
 /***/ "./frontend/follow_toggle.js":
 /*!***********************************!*\
   !*** ./frontend/follow_toggle.js ***!
   \***********************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const APIUtil = __webpack_require__(/*! ./api_util.js */ "./frontend/api_util.js");
 
 function FollowToggle (el) {
   this.el = $(el);
@@ -101,31 +133,43 @@ FollowToggle.prototype.handleClick = function(e){
   const self = this;
 
   if (this.followState === 'followed') {
-    $.ajax({
-      method: "DELETE",
-      url: `/users/${self.userId}/follow`,
-      dataType: 'json',
-      success: () => {
-        self.followState = 'unfollowed';
-        self.render();
-      }
+    APIUtil.unfollowUser(`${this.userId}`).then( () => {
+      this.followState = 'unfollowed';
+      this.render();
     });
   } else {
-      $.ajax({
-        method: "POST",
-        url: `/users/${this.userId}/follow`,
-        dataType: 'json',
-        success: () => {
-          this.followState = 'followed';
-          this.render();
-        }
+    APIUtil.followUser(`${this.userId}`).then( () => {
+      this.followState = 'followed';
+      this.render();
     });
   }
 };
 
-// FollowToggle.prototype.handleClick = (e) => {
+// FollowToggle.prototype.handleClick = function(e){
 //   e.preventDefault();
-//   this.render();
+//   const self = this;
+//
+//   if (this.followState === 'followed') {
+//     $.ajax({
+//       method: "DELETE",
+//       url: `/users/${self.userId}/follow`,
+//       dataType: 'json',
+//       success: () => {
+//         self.followState = 'unfollowed';
+//         self.render();
+//       }
+//     });
+//   } else {
+//       $.ajax({
+//         method: "POST",
+//         url: `/users/${self.userId}/follow`,
+//         dataType: 'json',
+//         success: () => {
+//           self.followState = 'followed';
+//           self.render();
+//         }
+//     });
+//   }
 // };
 
 // FollowToggle.prototype.handleClick = (event) => {
